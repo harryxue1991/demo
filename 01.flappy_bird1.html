@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        canvas {
+            border: 1px solid red;
+        }
+        img {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+<canvas id = 'cvs' width="500" height="500"></canvas>
+
+<script src="./js/util.js"></script>
+<script src="./js/bird.js"></script>
+<script src="./js/land.js"></script>
+<script src="./js/pipe.js"></script>
+<script src="./js/sky.js"></script>
+<script src="./js/gameScene.js"></script>
+<script src="./js/overScene.js"></script>
+
+
+<script>
+    var cvs = document.getElementById('cvs');
+    var ctx = cvs.getContext('2d');
+    util.loadImage({
+        bird: './img/bird.png',
+        land: './img/land.png',
+        pipeDown: './img/pipeDown.png',
+        pipeUp: './img/pipeUp.png',
+        sky: './img/sky.png'
+    }, function (imgObj) {
+        cvs.width = imgObj.sky.width;
+        cvs.height = imgObj.sky.height;
+
+        var gameScene = getGameScene(ctx, imgObj);
+
+        var overScene = getOverScene(ctx);
+
+        var timer = setInterval(function () {
+            var bird = getBird();
+            var birdCordX = bird.x + bird.width/2;
+            var birdCordY = bird.y + bird.height/2;
+
+            if ( ctx.isPointInPath(birdCordX,birdCordY) || birdCordY < 0 || birdCordY > (ctx.canvas.height - imgObj.land.height))  {
+                clearInterval(timer);
+                overScene.draw();
+            } else {
+                gameScene.draw();
+            }
+        },25
+        );
+
+    })
+</script>
+</body>
+</html>
